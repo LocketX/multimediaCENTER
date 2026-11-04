@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>multimediaCENTER</title>
+  <link rel="stylesheet" href="inicio.css">
+</head>
+<body>
+  <div id="brilho" aria-hidden="true"></div>
+
+  <header class="topo">
+    <span class="marca">multimedia<b>CENTER</b></span>
+    <div class="relogio">
+      <span id="hora">--:--</span>
+      <span id="data"></span>
+    </div>
+  </header>
+
+  <section class="destaque" aria-live="polite">
+    <p id="destaque-tipo" class="destaque-tipo">App</p>
+    <h1 id="destaque-nome">multimediaCENTER</h1>
+    <p id="destaque-descricao" class="destaque-descricao"></p>
+  </section>
+
+  <main>
+    <section class="fileira">
+      <h2>Seus apps</h2>
+      <div class="trilho" id="apps"></div>
+    </section>
+
+    <section class="fileira">
+      <h2>Sistema</h2>
+      <div class="trilho" id="sistema"></div>
+    </section>
+  </main>
+
+  <footer class="dicas">
+    <span><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> navegar</span>
+    <span><kbd>Enter</kbd> abrir</span>
+    <span><kbd>Home</kbd> volta para cá de dentro de um app</span>
+  </footer>
+
+  <script src="servicos.js"></script>
+  <script src="inicio.js"></script>
+</body>
+</html>
