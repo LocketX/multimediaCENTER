@@ -11,4 +11,4 @@ if not defined CHROME (
   exit /b 1
 )
 set "PERFIL=%LocalAppData%\multimediaCENTER\perfil"
-start "" "%CHROME%" --user-data-dir="%PERFIL%" --no-first-run --no-default-browser-check --start-fullscreen --app=chrome-extension://nolejiicjfkpbomlimkgajgkagobhgck/inicio.html
+start "" "%CHROME%" --user-data-dir="%PERFIL%" --no-first-run --no-default-browser-check --disable-sync --start-fullscreen --app=chrome-extension://nolejiicjfkpbomlimkgajgkagobhgck/inicio.html

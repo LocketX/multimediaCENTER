@@ -84,3 +84,11 @@ body.trocando #brilho { opacity: 0; }
 
 .dicas { display: flex; gap: 2.4vw; margin-top: 2vw; font-size: 1vw; color: var(--apagado); }
 kbd { font: inherit; border: 1px solid #2c3242; border-radius: .3vw; padding: 0 .4vw; margin-right: .25vw; color: var(--suave); }
+
+/* Modo leve: sem animações, sem brilho e sem sombras, para máquinas fracas. */
+body.leve #brilho { display: none; }
+body.leve .cartao, body.leve .cartao::after { transition: none; box-shadow: none; }
+body.leve .cartao { background: var(--cor); }
+body.leve .cartao.sistema { background: #1a1f2b; }
+body.leve .cartao:focus { transform: none; box-shadow: none; }
+body.leve .cartao-logo { filter: none; }

@@ -5,6 +5,7 @@ const CHAVE_FOCO = 'mmc:ultimo-foco';
 const SISTEMA = [
   { id: 'tela-cheia', nome: 'Tela cheia', icone: '⛶', descricao: 'Liga e desliga a tela cheia', acao: alternarTelaCheia },
   { id: 'gerenciar', nome: 'Gerenciar apps', icone: '☰', descricao: 'Mostre, esconda ou adicione apps', acao: () => { location.href = 'apps.html'; } },
+  { id: 'modo-leve', nome: 'Modo leve', icone: '⚡\uFE0E', descricao: '', acao: alternarModoLeve },
   { id: 'diagnostico', nome: 'Diagnóstico', icone: '✓', descricao: 'Confere se o Chrome está pronto para os apps', acao: () => { location.href = 'diagnostico.html'; } },
   { id: 'sair', nome: 'Sair', icone: '⏻', descricao: 'Fecha o multimediaCENTER', acao: sair },
 ];
@@ -66,6 +67,30 @@ async function abrir(item) {
   location.href = item.url;
 }
 
+// Modo leve: começa ligado sozinho em máquinas com pouca memória ou
+// poucos núcleos, até o usuário escolher.
+function maquinaFraca() {
+  return (navigator.deviceMemory || 8) <= 4 || (navigator.hardwareConcurrency || 4) <= 2;
+}
+
+function aplicarModoLeve(ligado) {
+  document.body.classList.toggle('leve', ligado);
+  const item = SISTEMA.find((s) => s.id === 'modo-leve');
+  item.ligado = ligado;
+  item.descricao = ligado
+    ? 'Ligado: sem animações nem efeitos, para máquinas mais fracas'
+    : 'Desligado: aperte Enter para tirar animações e efeitos';
+  const cartao = document.querySelector('.cartao[data-id="modo-leve"] .cartao-nome');
+  if (cartao) cartao.textContent = `Modo leve: ${ligado ? 'ligado' : 'desligado'}`;
+  if (document.activeElement?.dataset?.id === 'modo-leve') mostrarDestaque(item, 'sistema');
+}
+
+async function alternarModoLeve() {
+  const ligado = !SISTEMA.find((s) => s.id === 'modo-leve').ligado;
+  await chrome.storage.local.set({ modoLeve: ligado });
+  aplicarModoLeve(ligado);
+}
+
 async function janelaAtual() { return chrome.windows.getCurrent(); }
 
 async function alternarTelaCheia() {
@@ -122,12 +147,15 @@ function atualizarRelogio() {
 }
 
 async function iniciar() {
+  const { modoLeve } = await chrome.storage.local.get('modoLeve');
+  aplicarModoLeve(modoLeve ?? maquinaFraca());
   const { visiveis } = await carregarServicos();
   const apps = document.getElementById('apps');
   visiveis.forEach((s) => apps.appendChild(criarCartao(s, 'app')));
   if (!visiveis.length) apps.closest('.fileira').hidden = true;
   const sistema = document.getElementById('sistema');
   SISTEMA.forEach((s) => sistema.appendChild(criarCartao(s, 'sistema')));
+  aplicarModoLeve(SISTEMA.find((s) => s.id === 'modo-leve').ligado);
 
   const salvo = lerFoco();
   const alvo = (salvo && document.querySelector(`.cartao[data-id="${CSS.escape(salvo)}"]`))
