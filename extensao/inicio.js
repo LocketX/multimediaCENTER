@@ -21,17 +21,29 @@ function criarCartao(item, classe) {
     i.className = 'cartao-icone';
     i.textContent = item.icone;
     b.appendChild(i);
+  } else if (item.logo) {
+    const img = document.createElement('img');
+    img.className = 'cartao-logo';
+    img.src = item.logo;
+    img.alt = '';
+    b.appendChild(img);
+    b.classList.add('com-logo');
   } else {
-    const ini = document.createElement('span');
-    ini.className = 'cartao-inicial';
-    ini.textContent = item.nome[0];
-    b.appendChild(ini);
+    const marca = document.createElement('span');
+    marca.className = 'cartao-marca';
+    marca.textContent = item.nome;
+    b.appendChild(marca);
+    b.classList.add('com-logo');
+    return finalizarCartao(b, item, classe);
   }
   const nome = document.createElement('span');
   nome.className = 'cartao-nome';
   nome.textContent = item.nome;
   b.appendChild(nome);
+  return finalizarCartao(b, item, classe);
+}
 
+function finalizarCartao(b, item, classe) {
   b.addEventListener('focus', () => mostrarDestaque(item, classe));
   b.addEventListener('mouseenter', () => b.focus({ preventScroll: true }));
   b.addEventListener('click', () => (item.acao ? item.acao() : abrir(item)));

@@ -8,7 +8,7 @@ O app roda dentro do **Google Chrome**, que já traz o Widevine, o DRM que esses
 
 ## Situação atual (passo 2 de 4)
 
-- **Tela inicial estilo TV**, com uma fileira de apps (Netflix, Max, Crunchyroll, Prime Video, Disney+, YouTube, Spotify e Twitch) e uma fileira de sistema (tela cheia, diagnóstico e sair).
+- **Tela inicial estilo TV**, com uma fileira de apps (Netflix, HBO Max, Crunchyroll, Prime Video, Disney+, YouTube, Spotify e Twitch), cada um com a sua logo e uma fileira de sistema (tela cheia, diagnóstico e sair).
 - O app em foco aparece em destaque, e o fundo ganha a cor dele.
 - A tela lembra o último app usado ao voltar.
 - **Diagnóstico** confere se está no Google Chrome e se o Widevine está disponível.
@@ -30,6 +30,10 @@ Se você mudar a pasta do projeto de lugar, rode o `Configurar.bat` de novo.
 - `extensao/`: uma extensão do Chrome com a tela inicial (`inicio.html`), a lista de apps (`servicos.js`), o diagnóstico (`diagnostico.html`) e o atalho que volta para o início (`atalhos.js` e `fundo.js`). A chave fixa no `manifest.json` garante que o endereço da extensão seja sempre o mesmo.
 - `MultimediaCenter.bat`: acha o Chrome, abre o perfil do multimediaCENTER e mostra a tela inicial em tela cheia, sem barra de endereço.
 - `Configurar.bat`: abre a página de extensões nesse perfil para carregar a extensão.
+
+## Logos
+
+As logos em `extensao/logos/` vêm do [Simple Icons](https://simpleicons.org/) (versão 16.36.0, licença CC0) e são marcas registradas dos seus donos, usadas só para identificar cada serviço. O Simple Icons não tem logos do Prime Video e do Disney+, então esses dois cartões mostram o nome. Para trocar ou adicionar uma logo, coloque um arquivo SVG ou PNG branco em `extensao/logos/` e aponte o campo `logo` do serviço em `extensao/servicos.js` para ele.
 
 ## Limitações conhecidas
 

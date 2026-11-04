@@ -1,7 +1,7 @@
 // Tela de diagnóstico: confirma o Widevine e permite abrir cada serviço.
 const SERVICOS = [
   { nome: 'Netflix', url: 'https://www.netflix.com/browse' },
-  { nome: 'Max (HBO)', url: 'https://play.max.com/' },
+  { nome: 'HBO Max', url: 'https://play.hbomax.com/' },
   { nome: 'Crunchyroll', url: 'https://www.crunchyroll.com/' },
   { nome: 'Prime Video', url: 'https://www.primevideo.com/' },
   { nome: 'Disney+', url: 'https://www.disneyplus.com/' },

@@ -70,10 +70,13 @@ body.trocando #brilho { opacity: 0; }
 .cartao:focus { transform: scale(1.08); box-shadow: 0 1.2vw 2.6vw rgba(0,0,0,.6); z-index: 1; }
 .cartao:focus::after { opacity: 1; }
 .cartao-nome { font-size: 2vw; font-weight: 800; letter-spacing: -.01em; line-height: 1.05; }
-.cartao-inicial {
-  position: absolute; top: .7vw; right: 1.1vw;
-  font-size: 5.5vw; font-weight: 900; line-height: 1; opacity: .16;
+/* Logo (ou o nome, quando não há logo) centralizado no cartão. */
+.cartao-logo, .cartao-marca {
+  position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%);
 }
+.cartao-logo { width: 32%; height: 46%; object-fit: contain; filter: drop-shadow(0 .2vw .5vw rgba(0,0,0,.3)); }
+.cartao-marca { font-size: 2.1vw; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+.cartao.com-logo .cartao-nome { font-size: 1.05vw; font-weight: 600; opacity: .85; }
 
 .cartao.sistema { width: calc(var(--cartao-l) * .62); background: #1a1f2b; }
 .cartao.sistema .cartao-nome { font-size: 1.35vw; font-weight: 600; }
