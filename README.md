@@ -4,15 +4,16 @@ Um centro multimídia em tela cheia, com cara de TV, para dar nova vida a laptop
 
 O app roda dentro do **Google Chrome**, que já traz o Widevine, o DRM que esses serviços exigem. Ele usa um perfil do Chrome só dele, então não mexe no seu Chrome do dia a dia, e os logins nos serviços ficam salvos nesse perfil.
 
-## Situação atual (passo 1 de 4)
+![Tela inicial](docs/tela-inicial.png)
 
-Por enquanto o app abre uma **tela de diagnóstico** que:
+## Situação atual (passo 2 de 4)
 
-- confere se está rodando no Google Chrome;
-- confere se o Widevine está disponível;
-- traz um botão para abrir cada serviço e testar se o vídeo toca.
+- **Tela inicial estilo TV**, com uma fileira de apps (Netflix, Max, Crunchyroll, Prime Video, Disney+, YouTube, Spotify e Twitch) e uma fileira de sistema (tela cheia, diagnóstico e sair).
+- O app em foco aparece em destaque, e o fundo ganha a cor dele.
+- A tela lembra o último app usado ao voltar.
+- **Diagnóstico** confere se está no Google Chrome e se o Widevine está disponível.
 
-Atalhos: **Home** ou **F1** volta para a tela inicial de dentro de qualquer serviço, e **F11** liga e desliga a tela cheia.
+Atalhos: as setas navegam, **Enter** abre, **Home** ou **F1** voltam para a tela inicial de dentro de qualquer app, e **F11** liga e desliga a tela cheia.
 
 ## Como usar no Windows
 
@@ -26,7 +27,7 @@ Se você mudar a pasta do projeto de lugar, rode o `Configurar.bat` de novo.
 
 ## Como funciona
 
-- `extensao/`: uma extensão do Chrome com a tela inicial (`inicio.html`) e o atalho que volta para ela (`atalhos.js` e `fundo.js`). A chave fixa no `manifest.json` garante que o endereço da extensão seja sempre o mesmo.
+- `extensao/`: uma extensão do Chrome com a tela inicial (`inicio.html`), a lista de apps (`servicos.js`), o diagnóstico (`diagnostico.html`) e o atalho que volta para o início (`atalhos.js` e `fundo.js`). A chave fixa no `manifest.json` garante que o endereço da extensão seja sempre o mesmo.
 - `MultimediaCenter.bat`: acha o Chrome, abre o perfil do multimediaCENTER e mostra a tela inicial em tela cheia, sem barra de endereço.
 - `Configurar.bat`: abre a página de extensões nesse perfil para carregar a extensão.
 
@@ -38,6 +39,6 @@ Se você mudar a pasta do projeto de lugar, rode o `Configurar.bat` de novo.
 ## Plano
 
 1. ✅ Base no Google Chrome com tela de diagnóstico
-2. Tela inicial estilo TV com navegação por setas
+2. ✅ Tela inicial estilo TV com navegação por setas
 3. Abrir os serviços em tela cheia e voltar ao início
 4. Modo leve, iniciar junto com o Windows e instalador

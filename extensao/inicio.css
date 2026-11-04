@@ -1,16 +1,83 @@
-:root { --fundo:#0b0d12; --cartao:#161a23; --texto:#eef1f7; --suave:#9aa3b5; --ok:#3ecf8e; --erro:#ff6b6b; --foco:#8ab4ff; }
+/* Tela inicial estilo TV. Pensada para ser lida de longe e leve para
+   máquinas antigas: só anima transform e opacity, sem blur. */
+:root {
+  --fundo: #07080c;
+  --texto: #f4f6fb;
+  --suave: #a3abbd;
+  --apagado: #5d6577;
+  --foco: #ffffff;
+  --destaque: #3a4a7a;
+  --raio: 1.1vw;
+  --cartao-l: 18.5vw;
+  --cartao-a: calc(var(--cartao-l) * 9 / 16);
+}
 * { box-sizing: border-box; }
-body { margin:0; background:var(--fundo); color:var(--texto); font:18px/1.5 "Segoe UI", system-ui, sans-serif; }
-main { max-width:1100px; margin:0 auto; padding:48px 32px; }
-h1 { margin:0; font-size:40px; }
-.sub, .dica { color:var(--suave); }
-.cartao { background:var(--cartao); border-radius:16px; padding:24px 28px; margin-top:24px; }
-h2 { margin:0 0 12px; font-size:22px; }
-ul { list-style:none; padding:0; margin:0; }
-li { padding:4px 0; }
-.ok::before { content:"✔ "; color:var(--ok); }
-.erro::before { content:"✖ "; color:var(--erro); }
-.grade { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px; }
-button { font:inherit; color:var(--texto); background:#222838; border:3px solid transparent; border-radius:12px; padding:20px; cursor:pointer; }
-button:focus { outline:none; border-color:var(--foco); transform:scale(1.05); }
-kbd { background:#222838; border-radius:6px; padding:1px 6px; }
+html, body { height: 100%; }
+body {
+  margin: 0; overflow: hidden;
+  background: var(--fundo); color: var(--texto);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  display: flex; flex-direction: column;
+  padding: 2.6vw 4.5vw 1.8vw;
+  cursor: default; user-select: none;
+}
+
+/* Brilho colorido atrás de tudo, na cor do app em foco. */
+#brilho {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 70% 80% at 85% 0%, var(--destaque) 0%, transparent 65%);
+  opacity: .55; transition: opacity .25s;
+}
+body.trocando #brilho { opacity: 0; }
+
+.topo { display: flex; justify-content: space-between; align-items: baseline; }
+.marca { font-size: 1.5vw; font-weight: 300; letter-spacing: .02em; color: var(--suave); }
+.marca b { font-weight: 700; color: var(--texto); }
+.relogio { display: flex; gap: 1vw; align-items: baseline; }
+#hora { font-size: 2.2vw; font-weight: 600; font-variant-numeric: tabular-nums; }
+#data { font-size: 1.2vw; color: var(--suave); }
+
+.destaque { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 2.4vw; min-height: 0; }
+.destaque-tipo { margin: 0; font-size: 1.1vw; letter-spacing: .18em; text-transform: uppercase; color: var(--suave); }
+.destaque h1 { margin: .2vw 0 .4vw; font-size: 5.4vw; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+.destaque-descricao { margin: 0; font-size: 1.6vw; color: var(--suave); min-height: 1.4em; }
+
+.fileira h2 { margin: 0 0 .9vw; font-size: 1.35vw; font-weight: 600; color: var(--suave); }
+.fileira + .fileira { margin-top: 2.2vw; }
+.trilho {
+  display: flex; gap: 1.4vw;
+  overflow-x: hidden; scroll-behavior: auto;
+  scroll-padding: 0 2.6vw;
+  /* espaço para o cartão crescer no foco sem ser cortado */
+  padding: 1vw 1.2vw; margin: -1vw -1.2vw;
+}
+
+.cartao {
+  flex: 0 0 auto; position: relative;
+  width: var(--cartao-l); height: var(--cartao-a);
+  border: 0; border-radius: var(--raio); padding: 0 1.4vw 1.1vw;
+  color: #fff; font: inherit; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: linear-gradient(140deg, var(--cor) 0%, color-mix(in srgb, var(--cor) 45%, #000) 100%);
+  box-shadow: 0 .4vw 1.2vw rgba(0,0,0,.45);
+  transform: scale(1); transition: transform .14s ease-out, box-shadow .14s ease-out;
+  outline: none;
+}
+.cartao::after {
+  content: ""; position: absolute; inset: -.35vw; border-radius: calc(var(--raio) + .35vw);
+  border: .28vw solid var(--foco); opacity: 0; transition: opacity .14s;
+}
+.cartao:focus { transform: scale(1.08); box-shadow: 0 1.2vw 2.6vw rgba(0,0,0,.6); z-index: 1; }
+.cartao:focus::after { opacity: 1; }
+.cartao-nome { font-size: 2vw; font-weight: 800; letter-spacing: -.01em; line-height: 1.05; }
+.cartao-inicial {
+  position: absolute; top: .7vw; right: 1.1vw;
+  font-size: 5.5vw; font-weight: 900; line-height: 1; opacity: .16;
+}
+
+.cartao.sistema { width: calc(var(--cartao-l) * .62); background: #1a1f2b; }
+.cartao.sistema .cartao-nome { font-size: 1.35vw; font-weight: 600; }
+.cartao.sistema .cartao-icone { position: absolute; top: 1vw; left: 1.4vw; font-size: 2.2vw; opacity: .85; }
+
+.dicas { display: flex; gap: 2.4vw; margin-top: 2vw; font-size: 1vw; color: var(--apagado); }
+kbd { font: inherit; border: 1px solid #2c3242; border-radius: .3vw; padding: 0 .4vw; margin-right: .25vw; color: var(--suave); }

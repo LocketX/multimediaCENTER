@@ -1,75 +1,127 @@
-// Tela de diagnóstico: confirma o Widevine e permite abrir cada serviço.
-const SERVICOS = [
-  { nome: 'Netflix', url: 'https://www.netflix.com/browse' },
-  { nome: 'Max (HBO)', url: 'https://play.max.com/' },
-  { nome: 'Crunchyroll', url: 'https://www.crunchyroll.com/' },
-  { nome: 'Prime Video', url: 'https://www.primevideo.com/' },
-  { nome: 'Disney+', url: 'https://www.disneyplus.com/' },
-  { nome: 'YouTube', url: 'https://www.youtube.com/' },
-  { nome: 'Teste DRM (Bitmovin)', url: 'https://bitmovin.com/demos/drm' },
+// Tela inicial: monta os cartões, navega pelas setas como num controle
+// remoto e mostra o app em foco no destaque.
+const CHAVE_FOCO = 'mmc:ultimo-foco';
+
+const SISTEMA = [
+  { id: 'tela-cheia', nome: 'Tela cheia', icone: '⛶', descricao: 'Liga e desliga a tela cheia', acao: alternarTelaCheia },
+  { id: 'diagnostico', nome: 'Diagnóstico', icone: '✓', descricao: 'Confere se o Chrome está pronto para os apps', acao: () => { location.href = 'diagnostico.html'; } },
+  { id: 'sair', nome: 'Sair', icone: '⏻', descricao: 'Fecha o multimediaCENTER', acao: sair },
 ];
 
-function adicionarChecagem(texto, ok) {
-  const li = document.createElement('li');
-  li.textContent = texto;
-  li.className = ok ? 'ok' : 'erro';
-  document.getElementById('checagens').appendChild(li);
+function lerFoco() { try { return localStorage.getItem(CHAVE_FOCO); } catch { return null; } }
+function salvarFoco(id) { try { localStorage.setItem(CHAVE_FOCO, id); } catch { /* sem armazenamento: tudo bem */ } }
+
+function criarCartao(item, classe) {
+  const b = document.createElement('button');
+  b.className = `cartao ${classe}`;
+  b.dataset.id = item.id;
+  if (item.cor) b.style.setProperty('--cor', item.cor);
+  if (item.icone) {
+    const i = document.createElement('span');
+    i.className = 'cartao-icone';
+    i.textContent = item.icone;
+    b.appendChild(i);
+  } else {
+    const ini = document.createElement('span');
+    ini.className = 'cartao-inicial';
+    ini.textContent = item.nome[0];
+    b.appendChild(ini);
+  }
+  const nome = document.createElement('span');
+  nome.className = 'cartao-nome';
+  nome.textContent = item.nome;
+  b.appendChild(nome);
+
+  b.addEventListener('focus', () => mostrarDestaque(item, classe));
+  b.addEventListener('mouseenter', () => b.focus({ preventScroll: true }));
+  b.addEventListener('click', () => (item.acao ? item.acao() : abrir(item)));
+  return b;
 }
 
-async function verificar() {
-  document.getElementById('checagens').innerHTML = '';
+function mostrarDestaque(item, classe) {
+  salvarFoco(item.id);
+  document.getElementById('destaque-tipo').textContent = classe === 'app' ? 'App' : 'Sistema';
+  document.getElementById('destaque-nome').textContent = item.nome;
+  document.getElementById('destaque-descricao').textContent = item.descricao;
+  document.documentElement.style.setProperty('--destaque', item.cor || '#3a4a7a');
+}
 
-  const marcas = (navigator.userAgentData?.brands || []).map((b) => b.brand);
-  const ehChrome = marcas.includes('Google Chrome');
-  adicionarChecagem(
-    ehChrome ? 'Rodando no Google Chrome' : `Navegador não é o Google Chrome (${marcas.join(', ') || navigator.userAgent})`,
-    ehChrome,
-  );
+function abrir(item) {
+  document.body.classList.add('trocando');
+  location.href = item.url;
+}
 
-  const config = [{
-    initDataTypes: ['cenc'],
-    audioCapabilities: [{ contentType: 'audio/mp4; codecs="mp4a.40.2"' }],
-    videoCapabilities: [{ contentType: 'video/mp4; codecs="avc1.42E01E"' }],
-  }];
-  try {
-    await navigator.requestMediaKeySystemAccess('com.widevine.alpha', config);
-    adicionarChecagem('Widevine disponível (DRM da Netflix, Max, Crunchyroll...)', true);
-  } catch (erro) {
-    adicionarChecagem(`Widevine indisponível: ${erro.message}`, false);
+async function janelaAtual() { return chrome.windows.getCurrent(); }
+
+async function alternarTelaCheia() {
+  const j = await janelaAtual();
+  chrome.windows.update(j.id, { state: j.state === 'fullscreen' ? 'maximized' : 'fullscreen' });
+}
+
+async function sair() {
+  const j = await janelaAtual();
+  chrome.windows.remove(j.id);
+}
+
+// Navegação como num controle remoto: ← → andam dentro da fileira,
+// ↑ ↓ trocam de fileira e caem no cartão mais próximo na horizontal.
+function focar(cartao) {
+  cartao.focus({ preventScroll: true });
+  cartao.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+
+function mover(direcao) {
+  const atual = document.activeElement;
+  const trilhos = [...document.querySelectorAll('.trilho')];
+  const trilho = atual.closest && atual.closest('.trilho');
+  if (!trilho) { focar(document.querySelector('.cartao')); return; }
+
+  if (direcao === 'ArrowLeft' || direcao === 'ArrowRight') {
+    const vizinho = direcao === 'ArrowRight' ? atual.nextElementSibling : atual.previousElementSibling;
+    if (vizinho) focar(vizinho);
+    return;
   }
 
-  adicionarChecagem(
-    document.fullscreenElement || window.innerHeight === screen.height
-      ? 'Em tela cheia' : 'Fora da tela cheia (aperte F11)',
-    document.fullscreenElement || window.innerHeight === screen.height,
-  );
-}
-
-function montarServicos() {
-  const grade = document.getElementById('servicos');
-  for (const s of SERVICOS) {
-    const botao = document.createElement('button');
-    botao.textContent = s.nome;
-    botao.addEventListener('click', () => { location.href = s.url; });
-    grade.appendChild(botao);
+  const destino = trilhos[trilhos.indexOf(trilho) + (direcao === 'ArrowDown' ? 1 : -1)];
+  if (!destino) return;
+  const x = atual.getBoundingClientRect().left + atual.offsetWidth / 2;
+  let melhor = null, menor = Infinity;
+  for (const c of destino.children) {
+    const r = c.getBoundingClientRect();
+    const d = Math.abs(r.left + r.width / 2 - x);
+    if (d < menor) { menor = d; melhor = c; }
   }
-  grade.querySelector('button').focus();
+  if (melhor) focar(melhor);
 }
 
-// Navegação com as setas, como um controle remoto.
 document.addEventListener('keydown', (e) => {
-  const botoes = [...document.querySelectorAll('#servicos button')];
-  const atual = botoes.indexOf(document.activeElement);
-  if (atual < 0) return;
-  const colunas = getComputedStyle(document.getElementById('servicos'))
-    .gridTemplateColumns.split(' ').length;
-  const passos = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: colunas, ArrowUp: -colunas };
-  if (e.key in passos) {
-    e.preventDefault();
-    const proximo = Math.min(botoes.length - 1, Math.max(0, atual + passos[e.key]));
-    botoes[proximo].focus();
-  }
+  if (e.key.startsWith('Arrow')) { e.preventDefault(); mover(e.key); }
 });
 
-montarServicos();
-verificar();
+function atualizarRelogio() {
+  const agora = new Date();
+  document.getElementById('hora').textContent =
+    agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const data = agora.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+  document.getElementById('data').textContent = data[0].toUpperCase() + data.slice(1);
+}
+
+function iniciar() {
+  const apps = document.getElementById('apps');
+  SERVICOS.forEach((s) => apps.appendChild(criarCartao(s, 'app')));
+  const sistema = document.getElementById('sistema');
+  SISTEMA.forEach((s) => sistema.appendChild(criarCartao(s, 'sistema')));
+
+  const salvo = lerFoco();
+  const alvo = (salvo && document.querySelector(`.cartao[data-id="${CSS.escape(salvo)}"]`))
+    || document.querySelector('.cartao');
+  focar(alvo);
+
+  atualizarRelogio();
+  setInterval(atualizarRelogio, 15000);
+}
+
+// Ao voltar com o botão "voltar" do navegador, a página pode vir do cache.
+window.addEventListener('pageshow', () => document.body.classList.remove('trocando'));
+
+iniciar();
