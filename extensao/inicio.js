@@ -16,16 +16,15 @@ function adicionarChecagem(texto, ok) {
   document.getElementById('checagens').appendChild(li);
 }
 
-async function verificarWidevine() {
+async function verificar() {
   document.getElementById('checagens').innerHTML = '';
 
-  const status = await window.mmc.statusComponentes();
-  const widevine = Object.values(status || {}).find((c) => /widevine/i.test(c.name || c.title || ''));
-  if (widevine) {
-    adicionarChecagem(`Componente instalado: ${widevine.name || widevine.title} ${widevine.version || ''}`, true);
-  } else {
-    adicionarChecagem(`Componente não encontrado. Status: ${JSON.stringify(status)}`, false);
-  }
+  const marcas = (navigator.userAgentData?.brands || []).map((b) => b.brand);
+  const ehChrome = marcas.includes('Google Chrome');
+  adicionarChecagem(
+    ehChrome ? 'Rodando no Google Chrome' : `Navegador não é o Google Chrome (${marcas.join(', ') || navigator.userAgent})`,
+    ehChrome,
+  );
 
   const config = [{
     initDataTypes: ['cenc'],
@@ -34,10 +33,16 @@ async function verificarWidevine() {
   }];
   try {
     await navigator.requestMediaKeySystemAccess('com.widevine.alpha', config);
-    adicionarChecagem('O navegador aceita o Widevine (EME)', true);
+    adicionarChecagem('Widevine disponível (DRM da Netflix, Max, Crunchyroll...)', true);
   } catch (erro) {
-    adicionarChecagem(`O navegador recusou o Widevine: ${erro.message}`, false);
+    adicionarChecagem(`Widevine indisponível: ${erro.message}`, false);
   }
+
+  adicionarChecagem(
+    document.fullscreenElement || window.innerHeight === screen.height
+      ? 'Em tela cheia' : 'Fora da tela cheia (aperte F11)',
+    document.fullscreenElement || window.innerHeight === screen.height,
+  );
 }
 
 function montarServicos() {
@@ -45,7 +50,7 @@ function montarServicos() {
   for (const s of SERVICOS) {
     const botao = document.createElement('button');
     botao.textContent = s.nome;
-    botao.addEventListener('click', () => window.mmc.abrirServico(s.url));
+    botao.addEventListener('click', () => { location.href = s.url; });
     grade.appendChild(botao);
   }
   grade.querySelector('button').focus();
@@ -67,4 +72,4 @@ document.addEventListener('keydown', (e) => {
 });
 
 montarServicos();
-verificarWidevine();
+verificar();

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "multimediaCENTER",
+  "version": "0.1.0",
+  "description": "Tela inicial em tela cheia, estilo TV, para serviços de streaming.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApFwuOwXGQh0gdslkOJ4XT4Yyzf1THWK6wCFP4zQzzBC0DucwIFNLoXSxGJ5g9EmdFSE6yvER9v7Ai7WMGrFccbXbwYctQfYpMQ1h6FjTN9GRoUXeo5Fdj2WMJCSpd/YAlkzLlcgn+2JN6C4JpxACaB03vtqb0U17MQDhpDiFwmWpHI0rMTU3Ew0dVTTZ4MXTRgPCNBFV90afiNmhVTmXkQmLJ+BnO7DcfkvoJWMpVMVllGq7r+KE+grQ9nlp6ADM51OlJU1IfhOSVdUIYpuROar9Rmg0HK+M87QuDMotjiNXNcFhNeAZ0t37aXsx/JmGknQidHg5Q/4HZy/So1rvVQIDAQAB",
+  "background": { "service_worker": "fundo.js" },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["atalhos.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ]
+}
