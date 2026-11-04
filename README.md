@@ -6,14 +6,16 @@ O app roda dentro do **Google Chrome**, que já traz o Widevine, o DRM que esses
 
 ![Tela inicial](docs/tela-inicial.png)
 
-## Situação atual (passo 2 de 4)
+## Situação atual (passo 3 de 4)
 
-- **Tela inicial estilo TV**, com uma fileira de apps (Netflix, HBO Max, Crunchyroll, Prime Video, Disney+, YouTube, Spotify e Twitch), cada um com a sua logo e uma fileira de sistema (tela cheia, diagnóstico e sair).
+- **Tela inicial estilo TV**, com uma fileira de apps (Netflix, HBO Max, Crunchyroll, Prime Video, Disney+, YouTube, Spotify e Twitch), cada um com a sua logo e uma fileira de sistema (tela cheia, gerenciar apps, diagnóstico e sair).
 - O app em foco aparece em destaque, e o fundo ganha a cor dele.
 - A tela lembra o último app usado ao voltar.
+- **Gerenciar apps**: mostre ou esconda cada app da tela inicial e adicione qualquer site (por exemplo, Globoplay), com nome, endereço e cor.
+- Ao abrir um app, aparece por alguns segundos uma dica de como voltar ao início.
 - **Diagnóstico** confere se está no Google Chrome e se o Widevine está disponível.
 
-Atalhos: as setas navegam, **Enter** abre, **Home** ou **F1** voltam para a tela inicial de dentro de qualquer app, e **F11** liga e desliga a tela cheia.
+Atalhos: as setas navegam, **Enter** abre, **Home** ou **F1** voltam para a tela inicial de dentro de qualquer app, **Backspace** volta uma página (da primeira página do app, volta ao início), **Esc** sai das telas de sistema e **F11** liga e desliga a tela cheia.
 
 ## Como usar no Windows
 
@@ -27,7 +29,7 @@ Se você mudar a pasta do projeto de lugar, rode o `Configurar.bat` de novo.
 
 ## Como funciona
 
-- `extensao/`: uma extensão do Chrome com a tela inicial (`inicio.html`), a lista de apps (`servicos.js`), o diagnóstico (`diagnostico.html`) e o atalho que volta para o início (`atalhos.js` e `fundo.js`). A chave fixa no `manifest.json` garante que o endereço da extensão seja sempre o mesmo.
+- `extensao/`: uma extensão do Chrome com a tela inicial (`inicio.html`), a lista de apps (`servicos.js`), o diagnóstico (`diagnostico.html`), a tela de gerenciar apps (`apps.html`) e o atalho que volta para o início (`atalhos.js` e `fundo.js`). A chave fixa no `manifest.json` garante que o endereço da extensão seja sempre o mesmo.
 - `MultimediaCenter.bat`: acha o Chrome, abre o perfil do multimediaCENTER e mostra a tela inicial em tela cheia, sem barra de endereço.
 - `Configurar.bat`: abre a página de extensões nesse perfil para carregar a extensão.
 
@@ -44,5 +46,5 @@ As logos em `extensao/logos/` vêm do [Simple Icons](https://simpleicons.org/) (
 
 1. ✅ Base no Google Chrome com tela de diagnóstico
 2. ✅ Tela inicial estilo TV com navegação por setas
-3. Abrir os serviços em tela cheia e voltar ao início
+3. ✅ Dentro dos apps: tecla Voltar, dica de como voltar ao início e tela para gerenciar apps
 4. Modo leve, iniciar junto com o Windows e instalador

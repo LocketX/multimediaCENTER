@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>multimediaCENTER · Gerenciar apps</title>
+  <link rel="stylesheet" href="apps.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Gerenciar apps</h1>
+      <p class="sub">Escolha quais apps aparecem na tela inicial ou adicione um site novo.
+        Use <kbd>↑</kbd><kbd>↓</kbd> e <kbd>Enter</kbd>. <kbd>Esc</kbd> volta ao início.</p>
+    </header>
+
+    <ul id="lista" class="lista"></ul>
+
+    <form id="novo" class="novo" autocomplete="off">
+      <h2>Adicionar app</h2>
+      <label>Nome <input id="novo-nome" required maxlength="30" placeholder="Ex.: Globoplay"></label>
+      <label>Endereço <input id="novo-url" required placeholder="https://globoplay.globo.com/"></label>
+      <label class="cor">Cor <input id="novo-cor" type="color" value="#3a4a7a"></label>
+      <button type="submit" class="botao">Adicionar</button>
+      <p id="erro" class="erro" role="alert"></p>
+    </form>
+
+    <button id="voltar" class="botao secundario">Voltar ao início</button>
+  </main>
+  <script src="servicos.js"></script>
+  <script src="apps.js"></script>
+</body>
+</html>

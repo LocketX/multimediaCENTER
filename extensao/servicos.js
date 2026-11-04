@@ -10,3 +10,28 @@ const SERVICOS = [
   { id: 'spotify', logo: 'logos/spotify.svg', nome: 'Spotify', descricao: 'Música e podcasts', cor: '#1db954', url: 'https://open.spotify.com/' },
   { id: 'twitch', logo: 'logos/twitch.svg', nome: 'Twitch', descricao: 'Transmissões ao vivo', cor: '#9146ff', url: 'https://www.twitch.tv/' },
 ];
+
+// Preferências do usuário, guardadas no Chrome:
+//  - ocultos: ids dos apps que não aparecem na tela inicial
+//  - extras: apps adicionados pelo usuário ({ id, nome, url, cor })
+async function lerPreferencias() {
+  const { ocultos = [], extras = [] } = await chrome.storage.local.get(['ocultos', 'extras']);
+  return { ocultos, extras };
+}
+
+async function salvarPreferencias(prefs) {
+  await chrome.storage.local.set(prefs);
+}
+
+function descricaoExtra(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+}
+
+async function carregarServicos() {
+  const { ocultos, extras } = await lerPreferencias();
+  const todos = [
+    ...SERVICOS,
+    ...extras.map((e) => ({ ...e, descricao: descricaoExtra(e.url), extra: true })),
+  ];
+  return { todos, visiveis: todos.filter((s) => !ocultos.includes(s.id)), ocultos, extras };
+}

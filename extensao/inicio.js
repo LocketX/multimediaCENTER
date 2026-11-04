@@ -4,6 +4,7 @@ const CHAVE_FOCO = 'mmc:ultimo-foco';
 
 const SISTEMA = [
   { id: 'tela-cheia', nome: 'Tela cheia', icone: '⛶', descricao: 'Liga e desliga a tela cheia', acao: alternarTelaCheia },
+  { id: 'gerenciar', nome: 'Gerenciar apps', icone: '☰', descricao: 'Mostre, esconda ou adicione apps', acao: () => { location.href = 'apps.html'; } },
   { id: 'diagnostico', nome: 'Diagnóstico', icone: '✓', descricao: 'Confere se o Chrome está pronto para os apps', acao: () => { location.href = 'diagnostico.html'; } },
   { id: 'sair', nome: 'Sair', icone: '⏻', descricao: 'Fecha o multimediaCENTER', acao: sair },
 ];
@@ -58,8 +59,10 @@ function mostrarDestaque(item, classe) {
   document.documentElement.style.setProperty('--destaque', item.cor || '#3a4a7a');
 }
 
-function abrir(item) {
+async function abrir(item) {
   document.body.classList.add('trocando');
+  // Avisa o fundo para o app mostrar a dica de como voltar ao início.
+  try { await chrome.runtime.sendMessage('mmc:abrindo-app'); } catch { /* segue mesmo assim */ }
   location.href = item.url;
 }
 
@@ -118,9 +121,11 @@ function atualizarRelogio() {
   document.getElementById('data').textContent = data[0].toUpperCase() + data.slice(1);
 }
 
-function iniciar() {
+async function iniciar() {
+  const { visiveis } = await carregarServicos();
   const apps = document.getElementById('apps');
-  SERVICOS.forEach((s) => apps.appendChild(criarCartao(s, 'app')));
+  visiveis.forEach((s) => apps.appendChild(criarCartao(s, 'app')));
+  if (!visiveis.length) apps.closest('.fileira').hidden = true;
   const sistema = document.getElementById('sistema');
   SISTEMA.forEach((s) => sistema.appendChild(criarCartao(s, 'sistema')));
 
